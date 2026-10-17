@@ -1,0 +1,9 @@
+{
+  "name": "microvm-runner-image",
+  "version": "1.0.0",
+  "private": true,
+  "description": "node_modules baked into the runner MicroVM image so app.js can call TerminateMicrovmCommand without a runtime install step.",
+  "dependencies": {
+    "@aws-sdk/client-lambda-microvms": "3.1086.0"
+  }
+}

@@ -1,0 +1,51 @@
+name: Pulumi Up
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # OIDC to AWS
+  contents: read
+
+jobs:
+  up:
+    # Nothing deploys until DEPLOY_ENABLED is "true". First apply should be you, on
+    # purpose, not whatever happened to get pushed first.
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: _infrastructure/pulumi/package-lock.json
+
+      - name: Install Pulumi program dependencies
+        working-directory: _infrastructure/pulumi
+        run: npm ci
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Pulumi up
+        uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: ${{ vars.PULUMI_ORG }}/sbx
+          work-dir: _infrastructure/pulumi
+          diff: true
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

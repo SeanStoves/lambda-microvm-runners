@@ -1,0 +1,55 @@
+name: Pulumi Preview
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # OIDC to AWS
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    # Fork PRs don't get OIDC or secrets anyway, and before setup there's no role to
+    # assume. Skip both instead of failing red.
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      vars.AWS_PREVIEW_ROLE_ARN != ''
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: _infrastructure/pulumi/package-lock.json
+
+      - name: Install Pulumi program dependencies
+        working-directory: _infrastructure/pulumi
+        run: npm ci
+
+      # Read-only role on purpose. Preview runs whatever Pulumi code is in the PR, and
+      # that code has no business holding creds that can change anything.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_PREVIEW_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Pulumi preview
+        uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: ${{ vars.PULUMI_ORG }}/sbx
+          work-dir: _infrastructure/pulumi
+          diff: true
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

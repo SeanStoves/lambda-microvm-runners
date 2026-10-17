@@ -1,0 +1,26 @@
+{
+  "name": "lambda-microvm-runners",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/webhook/handler.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/webhook/index.js && esbuild src/dispatcher/handler.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/dispatcher/index.js && node -e \"require('fs').writeFileSync('dist/webhook/package.json', JSON.stringify({type:'commonjs'}))\" && node -e \"require('fs').writeFileSync('dist/dispatcher/package.json', JSON.stringify({type:'commonjs'}))\"",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "esbuild": "^0.24.2",
+    "vitest": "^2.1.8",
+    "tsx": "^4.19.2",
+    "@types/node": "^22.10.5",
+    "@types/aws-lambda": "^8.10.149"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.706.0",
+    "@aws-sdk/client-sqs": "^3.706.0",
+    "@aws-sdk/client-dynamodb": "^3.706.0",
+    "@aws-sdk/client-lambda-microvms": "3.1086.0",
+    "@aws-sdk/client-s3": "^3.706.0",
+    "@aws-sdk/client-sts": "^3.706.0"
+  }
+}

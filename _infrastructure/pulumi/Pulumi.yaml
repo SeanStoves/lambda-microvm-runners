@@ -1,0 +1,6 @@
+name: lambda-microvm-runners
+description: "Hackathon POC: GHA runners on Lambda MicroVMs"
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm

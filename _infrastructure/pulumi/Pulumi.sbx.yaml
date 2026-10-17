@@ -1,0 +1,29 @@
+# Placeholder values - replace before the first `pulumi up`.
+#
+# Secrets go in with --secret, which writes them here encrypted with your own
+# stack key. That ciphertext is safe to commit:
+#   pulumi config set --secret webhookSecret "$(openssl rand -hex 32)"
+#   pulumi config set --secret githubAppPrivateKey < path/to/app-private-key.pem
+#
+# You'll need the webhook secret again for the GitHub App:
+#   pulumi config get webhookSecret
+#
+# Once the "Build MicroVM Image" workflow has run, add the image it printed AND
+# COMMIT THIS FILE. CI deploys from what's in git. Leave this local and the next
+# push to main quietly unsets it and every job stops dispatching:
+#   pulumi config set microvmImageIdentifier arn:aws:lambda:<region>:<account>:microvm-image:gha-runner-<sha>
+#
+# Optional: vpcEnabled: "true" puts the Lambdas in a VPC with a NAT gateway and
+# flow logs. Costs ~$32/mo idle. Off by default.
+config:
+  aws:region: "us-east-1"
+  lambda-microvm-runners:awsAccountId: "123456789012"
+  lambda-microvm-runners:pulumiOrg: your-pulumi-org
+  lambda-microvm-runners:githubOrg: your-github-org
+  lambda-microvm-runners:githubRepo: lambda-microvm-runners
+  lambda-microvm-runners:githubAppClientId: Iv23liXXXXXXXXXXXXXX
+  lambda-microvm-runners:githubAppInstallationId: "12345678"
+  lambda-microvm-runners:service: gha-microvm-runner
+  lambda-microvm-runners:team: platform
+  lambda-microvm-runners:teamSlack: your-team-channel
+  lambda-microvm-runners:pulumiNotificationsSlackChannel: your-team-channel

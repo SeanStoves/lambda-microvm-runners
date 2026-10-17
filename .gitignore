@@ -1,0 +1,15 @@
+node_modules
+dist
+coverage
+*.zip
+*.log
+.pulumi
+
+# local env files, keep the example if you add one
+.env
+.env.*
+!.env.example
+
+# GitHub App private keys and anything else that looks like one
+*.pem
+*.key

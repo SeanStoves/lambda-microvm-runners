@@ -1,0 +1,8 @@
+node_modules
+coverage
+bin
+build
+.pulumi
+package-lock.json
+# Vendored, auto-generated Pulumi SDK - not source we own or format.
+sdks

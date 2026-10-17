@@ -1,0 +1,28 @@
+{
+  "name": "lambda-microvm-runners",
+  "main": "index.ts",
+  "scripts": {
+    "format:check": "prettier . --check",
+    "format": "prettier . --write",
+    "lint:fix": "eslint . --fix",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@types/node": "^18",
+    "esbuild": "^0.28.1",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.3",
+    "typescript": "^5",
+    "typescript-eslint": "^8.59.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1086.0",
+    "@aws-sdk/client-lambda-microvms": "^3.1086.0",
+    "@aws-sdk/client-secrets-manager": "^3.1086.0",
+    "@aws-sdk/client-sqs": "^3.1086.0",
+    "@pulumi/aws": "^7",
+    "@pulumi/pulumi": "^3",
+    "@pulumi/pulumiservice": "^0.36.0"
+  }
+}

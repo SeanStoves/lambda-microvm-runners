@@ -1,0 +1,30 @@
+name: Demo
+
+on:
+  # Manual only. On push it'd spin a VM on every commit and pile up queued runs.
+  workflow_dispatch: {}
+
+# The token lands on a self-hosted runner. It gets to read the repo and that's it.
+permissions:
+  contents: read
+
+jobs:
+  demo:
+    # If this job runs at all, the whole chain works. If it sits queued, start with
+    # the webhook Lambda logs and work your way down.
+    runs-on: [self-hosted, lambda-microvms]
+    steps:
+      - name: uname -a
+        run: uname -a
+
+      - name: node --version
+        run: node --version
+
+      - name: git --version
+        run: git --version
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Echo success
+        run: echo "success"
